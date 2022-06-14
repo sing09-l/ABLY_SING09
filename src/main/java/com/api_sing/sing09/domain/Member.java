@@ -1,7 +1,8 @@
 package com.api_sing.sing09.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -11,7 +12,10 @@ import javax.persistence.Id;
 
 
 @Entity // 테이블과 링크될 클래스임을 나타냄
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     @Id
@@ -21,4 +25,5 @@ public class Member {
     private String password;
     private String name;
     private String regNo;
+
 }
