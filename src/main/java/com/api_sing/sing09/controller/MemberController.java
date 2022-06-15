@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/szs")
 public class MemberController {
 
     //private final MemberService service;
@@ -32,7 +33,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "회원가입")
-    @PostMapping("/users/add")
+    @PostMapping("/signup")
     public Member save(@ApiParam(value ="회원 id", required = true) @RequestParam String userId,
                      @ApiParam(value ="회원 pw", required = true) @RequestParam String password,
                      @ApiParam(value ="회원 이름", required = true) @RequestParam String name,
@@ -44,17 +45,21 @@ public class MemberController {
                 .name(name)
                 .regNo(regNo)
                 .build();
+        if(("홍길동".equals(name) && "860824-1655068".equals(name)) ||
+                ("김둘리".equals(name) && "921108-1582816".equals(name)) ||
+                ("마징가".equals(name) && "880601-2455116".equals(name)) ||
+                ("베지터".equals(name) && "910411-1656116".equals(name)) ||
+                ("손오공".equals(name) && "820326-2715702".equals(name)) ){
+
+        }
 
         return repository.save(member);
     }
-    @GetMapping("/main")
-    public String mainIndexPage() {
+    @ApiOperation(value = "유저 정보 스크랩")
+    @GetMapping(value = "/scrap")
+    public void mainIndexPage() {
 
-        JsonObject param = new JsonObject();
-        // POST 방식으로 호출.(GET, POST, PUT, DELETE 다 가능 합니다.)
-        service.callApi(param, "POST");
-
-        return "/tiles/view/main";
+        service.callApi();
     }
 
 }
