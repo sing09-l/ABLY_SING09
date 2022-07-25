@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>비밀번호찾기</title>
+
+    <style>
+    body {
+        background: #f8f8f8;
+        padding: 60px 0;
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        <div class="panel panel-success">
+            <div class="panel-body">
+                <div style="margin-bottom: 10px;" >
+                    <label class="form-label">전화번호</label>
+                    <div>
+                        <input type="text" class="form-control"id="phoneNo_param" style="width:57%;" placeholder="***-****-****">
+                        <button type="button" id="find" class="form-control btn btn-primary" style="width:21%; margin-right: 90px; float: right;margin-top: -38px;">가입여부</button>
+                        <button type="button" id="send" class="form-control btn btn-primary" style="width:15%; float: right;margin-top: -38px;" disabled>전송</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px;" >
+                    <label class="form-label">인증번호</label>
+                    <input type="text" class="form-control"id="checkNo_param" style="width:83%;">
+                    <button type="button" id="enterBtn" class="form-control btn btn-primary" style="width:15%; float: right;margin-top: -38px;" disabled>확인</button>
+                </div>
+                <div style="margin-bottom: 10px;" >
+                    <label class="form-label">비밀번호</label>
+                    <input type="password" class="form-control"id="password_param" placeholder="Password" disabled>
+                </div>
+                <input type="hidden" id="checkNo" name="checkNo" />
+                <div style="margin-top: 10px;" >
+                    <button id="change" onclick="fn_change()" class="form-control btn btn-primary" style="width:29%;" >비밀번호변경</button>
+                    <button id="back" onclick="location='/login'" class="form-control btn btn-primary" style="width:29%;">뒤로가기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    history.replaceState({}, null, location.pathname);
+
+    function fn_change() {
+       var url 	= "/password_change";
+        var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+        if (regPhone.test($("#phoneNo_param").val()) === true) {
+        } else {
+         alert('올바른 휴대전화 번호를 입력해주세요.');
+         $("#phoneNo_param").focus();
+         return;
+        }
+        if($("#checkNo_param").val() == "") {
+        alert("인증번호를 입력해주세요.");
+        $("#checkNo_param").focus();
+        return;
+       }
+       if($("#checkNo").val() != "Y") {
+        alert("전화번호 인증이 필요합니다.");
+        $("#checkNo_param").focus();
+        return;
+       }
+       if($("#password_param").val() == "") {
+        alert("비밀번호를 입력해주세요.");
+        $("#password_param").focus();
+        return;
+       }
+
+       jQuery.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                password : $("#password_param").val(),
+                phoneNo  : $("#phoneNo_param").val()
+            },
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            dataType: 'html',
+            error		: function(_, textStatus, errorThrown) {
+                alert("오류");
+            },
+            success		: function(data) {
+                alert("비밀번호 변경이 완료되었습니다.");
+                $(location).attr('href', '/login');
+            }
+        });
+    }
+
+    $('#find').click(function() {
+        var to = $('#phoneNo_param').val();
+
+        var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+        if (regPhone.test(to) === true) {
+        } else {
+         alert('올바른 휴대전화 번호를 입력해주세요.');
+         $("#phoneNo_param").focus();
+         return;
+        }
+
+        $.ajax ({
+            url: '/check/signNo',
+            type: 'GET',
+            data: {
+                "phoneNo" : to
+            },
+            success: function(data) {
+                if(data == "Y") {
+                    $("#send").attr("disabled", false);
+                    $("#enterBtn").attr("disabled", false);
+                    alert('가입된 휴대전화 번호가 존재합니다. 전화번호 인증을 해주세요');
+                }else {
+                    alert('가입된 휴대전화 번호가 없습니다.');
+                }
+
+            }
+        });
+    });
+
+
+
+    $('#send').click(function() {
+
+	var to = $('#phoneNo_param').val();
+
+    var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+    if (regPhone.test(to) === true) {
+    } else {
+     alert('올바른 휴대전화 번호를 입력해주세요.');
+     $("#phoneNo_param").focus();
+     return;
+    }
+
+	$.ajax ({
+		url: '/check/sendSMS',
+		type: 'GET',
+		data: {
+			"to" : to
+		},
+		success: function(data) {
+			var checkNum = data;
+
+			$('#enterBtn').click(function() {
+				var userCheckNum = $('#checkNo_param').val();
+
+				if(checkNum === userCheckNum) {
+					alert('인증 성공하였습니다.');
+					$("#checkNo").val("Y");
+					$("#checkNo_param").attr("disabled", true);
+					$("#password_param").attr("disabled", false);
+				}
+				else {
+					alert('인증 실패하였습니다. 다시 입력해주세요.');
+				}
+			});
+
+		}
+	});
+
+});
+</script>
+</html>

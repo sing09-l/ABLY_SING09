@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <meta charset="UTF-8">
+    <title>로그인정보</title>
+</head>
+<body>
+<div class="container">
+    <h3><code>로그인정보</code></h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="col-md-1">ID</th>
+                <th class="col-md-1">PASSWORD</th>
+                <th class="col-md-4">이름</th>
+                <th class="col-md-3">전화번호</th>
+                <th class="col-md-3">EMAIL</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="member : ${data}">
+                <td th:text="${member.USERID}"></td>
+                <td th:text="${member.PASSWORD}"></td>
+                <td th:text="${member.NAME}"></td>
+                <td th:text="${member.PHONENO}"></td>
+                <td th:text="${member.EMAIL}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <button id="list" onclick="location='/login'" class="form-control btn btn-primary" style="width:35%;">메인화면</button>
+</div>
+</body>
+</html>
+<script>
+    history.replaceState({}, null, location.pathname);
+</script>
