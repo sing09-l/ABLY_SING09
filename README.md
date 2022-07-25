@@ -28,4 +28,6 @@ Driver Class: org.h2.Driver / JDBC URL: jdbc:h2:mem:test / User Name: sing09 / P
 * 로그인 시 내 정보 조회
 * 비밀번호 찾기(재설정) 기능 이용 시 휴대전화 인증 필수.
      * 변경된 비밀번호로 로그인 가능
+	 
+https://github.com/sing09-l/ABLY_SING09
      
